@@ -22,6 +22,18 @@ function safeCb(cb) {
 }
 
 /**
+ * write to file recursive
+ * @param {string} filepath
+ * @param {any} content
+ */
+function writeFile(filepath, content) {
+  if (!fs.existsSync(path.dirname(filepath))) {
+    fs.mkdirSync(path.dirname(filepath), { recursive: true });
+  }
+  fs.writeFileSync(filepath, content);
+}
+
+/**
  * Persistent Cache
  * @param {import('./index').Opt} options
  * @returns
@@ -73,7 +85,7 @@ function cache(options) {
   function putSync(name, data) {
     const entry = buildCacheEntry(data);
 
-    if (persist) fs.writeFileSync(buildFilePath(name), JSON.stringify(entry));
+    if (persist) writeFile(buildFilePath(name), JSON.stringify(entry));
 
     if (ram) {
       memoryCache[name] = entry;
