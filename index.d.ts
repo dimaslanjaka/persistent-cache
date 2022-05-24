@@ -10,8 +10,8 @@ declare function cache(options: Partial<Opt> = {}): {
   putSync: (name: string, data: any) => void;
   getSync: <T>(name: string) => T;
   deleteSync: (name: string) => void;
-  keys: (callback: any) => any;
-  keysSync: () => any;
+  keys: (callback: (keys: string[]) => any) => any;
+  keysSync: () => string[];
   unlink: (callback: any) => any;
 };
 export default cache;
