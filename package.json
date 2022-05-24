@@ -16,6 +16,13 @@
     "store"
   ],
   "author": "Leon Strauss <me@lionc.de> (lionc.de)",
+  "contributors": [
+    {
+      "email": "dimaslanjaka@gmail.com",
+      "name": "Dimas Lanjaka",
+      "url": "https://www.webmanajemen.com"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/LionC/persistent-cache/issues"
