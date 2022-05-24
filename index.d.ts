@@ -41,5 +41,9 @@ declare function cache(options: Partial<Opt> = {}): {
    * delete the folder and files of a persistent cache
    */
   unlink: (callback: any) => any;
+  /**
+   * get all values
+   */
+  valuesSync: <T extends any[]>() => T;
 };
 export default cache;

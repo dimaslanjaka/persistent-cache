@@ -204,17 +204,27 @@ function cache(options) {
     return fs.readdirSync(cacheDir).map(transformFileNameToKey);
   }
 
+  function valuesSync() {
+    return keysSync().map((key) => {
+      return get(key);
+    });
+  }
+
   return {
     put: put,
+    set: put,
     get: get,
     delete: deleteEntry,
 
     putSync: putSync,
+    setSync: putSync,
     getSync: getSync,
     deleteSync: deleteEntrySync,
 
     keys: keys,
     keysSync: keysSync,
+
+    valuesSync: valuesSync,
 
     unlink: unlink
   };
