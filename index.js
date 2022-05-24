@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('upath');
 const fs = require('fs');
 const mkdirp = require('mkdirp-no-bin');
 const rmdir = require('rmdir');
@@ -46,6 +46,8 @@ function cache(options) {
       (require.main ? path.dirname(require.main.filename) : undefined) ||
       process.cwd()) + '/cache'
   );
+  if (!fs.existsSync(path.dirname(base)))
+    fs.mkdirSync(path.dirname(base), { recursive: true });
   const cacheDir = path.normalize(base + '/' + (options.name || 'cache'));
   const cacheInfinitely = !(typeof options.duration === 'number');
   const cacheDuration = options.duration;
