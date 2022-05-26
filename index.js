@@ -188,6 +188,10 @@ function cache(options) {
     return fileName.slice(0, -5);
   }
 
+  function resolveDir(dirPath) {
+    if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
+  }
+
   function keys(cb) {
     cb = safeCb(cb);
 
@@ -202,7 +206,7 @@ function cache(options) {
 
   function keysSync() {
     if (ram && !persist) return Object.keys(memoryCache);
-
+    resolveDir(cacheDir);
     return fs.readdirSync(cacheDir).map(transformFileNameToKey);
   }
 
