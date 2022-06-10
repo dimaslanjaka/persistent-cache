@@ -30,11 +30,11 @@
   "homepage": "https://github.com/LionC/persistent-cache#readme",
   "dependencies": {
     "mkdirp-no-bin": "^0.5.1",
-    "rmdir": "^1.2.0",
+    "rmdir": "^1.0.0",
     "upath": "^2.0.1"
   },
   "devDependencies": {
-    "mocha": "^2.5.3",
+    "mocha": "^10.0.0",
     "should": "^9.0.2"
   }
 }
