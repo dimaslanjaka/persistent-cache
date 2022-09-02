@@ -35,7 +35,7 @@ function writeFile(filepath: string, content: string) {
 }
 
 export interface Opt {
-  [key: string]: any
+  [key: string]: any;
   base: string;
   name: string;
   duration: number;
@@ -65,7 +65,7 @@ function cache(options: Partial<Opt> = {}) {
 
   if (persist && !exists(cacheDir)) mkdirp.sync(cacheDir);
 
-  function buildFilePath(name) {
+  function buildFilePath(name: string) {
     return path.normalize(cacheDir + "/" + name + ".json");
   }
 
@@ -78,10 +78,19 @@ function cache(options: Partial<Opt> = {}) {
     };
   }
 
-  function put(name, data, cb) {
+  function put(
+    name: string,
+    data: any,
+    cb: { (err: NodeJS.ErrnoException): void; (e: Error, ...args: any[]): any }
+  ) {
     const entry = buildCacheEntry(data);
 
-    if (persist) fs.writeFile(buildFilePath(name), JSON.stringifyWithCircularRefs(entry), cb);
+    if (persist)
+      fs.writeFile(
+        buildFilePath(name),
+        JSON.stringifyWithCircularRefs(entry),
+        cb
+      );
 
     if (ram) {
       entry.data = JSON.stringifyWithCircularRefs(entry.data);
@@ -92,18 +101,21 @@ function cache(options: Partial<Opt> = {}) {
     }
   }
 
-  function putSync(name, data) {
+  function putSync(name: string, data: any) {
     const entry = buildCacheEntry(data);
 
-    if (persist) writeFile(buildFilePath(name), JSON.stringifyWithCircularRefs(entry));
+    if (persist)
+      writeFile(buildFilePath(name), JSON.stringifyWithCircularRefs(entry));
 
     if (ram) {
       memoryCache[name] = entry;
-      memoryCache[name].data = JSON.stringifyWithCircularRefs(memoryCache[name].data);
+      memoryCache[name].data = JSON.stringifyWithCircularRefs(
+        memoryCache[name].data
+      );
     }
   }
 
-  function get(name: string | number, cb?: (e: Error) => any) {
+  function get(name: string, cb?: (e: Error) => any) {
     if (ram && !!memoryCache[name]) {
       let entry = memoryCache[name];
 
@@ -122,12 +134,12 @@ function cache(options: Partial<Opt> = {}) {
 
     fs.readFile(buildFilePath(name), "utf8", onFileRead);
 
-    function onFileRead(err, content) {
+    function onFileRead(err: any, content: string) {
       if (err != null) {
         return safeCb(cb)(null, undefined);
       }
 
-      let entry;
+      let entry: ReturnType<typeof JSON.parse>;
       try {
         entry = JSON.parse(content);
       } catch (e) {
@@ -153,7 +165,7 @@ function cache(options: Partial<Opt> = {}) {
       return JSON.parse(entry.data);
     }
 
-    let data;
+    let data: ReturnType<typeof JSON.parse>;
     try {
       data = JSON.parse(fs.readFileSync(buildFilePath(name), "utf8"));
     } catch (e) {
@@ -166,7 +178,10 @@ function cache(options: Partial<Opt> = {}) {
     return data.data;
   }
 
-  function deleteEntry(name, cb) {
+  function deleteEntry(
+    name: string,
+    cb: { (e: Error, ...args: any[]): any; (err: NodeJS.ErrnoException): void }
+  ) {
     if (ram) {
       delete memoryCache[name];
 
@@ -186,7 +201,10 @@ function cache(options: Partial<Opt> = {}) {
     fs.unlinkSync(buildFilePath(name));
   }
 
-  function unlink(cb) {
+  function unlink(cb: {
+    (e: Error, ...args: any[]): any;
+    (e: Error, ...args: any[]): any;
+  }) {
     if (persist) return rmdir(cacheDir, safeCb(cb));
 
     safeCb(cb)(null);
@@ -196,11 +214,11 @@ function cache(options: Partial<Opt> = {}) {
     return fileName.slice(0, -5);
   }
 
-  function resolveDir(dirPath) {
+  function resolveDir(dirPath: fs.PathLike) {
     if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
   }
 
-  function keys(cb) {
+  function keys(cb: (e: Error, ...args: any[]) => any) {
     cb = safeCb(cb);
 
     if (ram && !persist) return cb(null, Object.keys(memoryCache));
@@ -225,8 +243,17 @@ function cache(options: Partial<Opt> = {}) {
   }
 
   return {
+    /**
+     * insert new data
+     */
     put: put,
+    /**
+     * insert new data
+     */
     set: put,
+    /**
+     * get data
+     */
     get: get,
     delete: deleteEntry,
 

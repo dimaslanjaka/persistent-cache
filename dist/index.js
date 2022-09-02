@@ -186,8 +186,17 @@ function cache(options = {}) {
         });
     }
     return {
+        /**
+         * insert new data
+         */
         put: put,
+        /**
+         * insert new data
+         */
         set: put,
+        /**
+         * get data
+         */
         get: get,
         delete: deleteEntry,
         putSync: putSync,
