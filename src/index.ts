@@ -1,7 +1,8 @@
-import fs from 'fs';
-import mkdirp from 'mkdirp-no-bin';
-import rmdir from 'rmdir';
-import path from 'upath';
+import fs from "fs";
+import mkdirp from "mkdirp-no-bin";
+import rmdir from "rmdir";
+import path from "upath";
+import "./JSON";
 
 function exists(dir: fs.PathLike) {
   try {
@@ -14,7 +15,7 @@ function exists(dir: fs.PathLike) {
 }
 
 function safeCb(cb: { (e: Error, ...args: any[]): any }) {
-  if (typeof cb === 'function') return cb;
+  if (typeof cb === "function") return cb;
 
   return function () {
     //
@@ -26,39 +27,46 @@ function safeCb(cb: { (e: Error, ...args: any[]): any }) {
  * @param {string} filepath
  * @param {any} content
  */
-function writeFile(filepath, content) {
+function writeFile(filepath: string, content: string) {
   if (!fs.existsSync(path.dirname(filepath))) {
     fs.mkdirSync(path.dirname(filepath), { recursive: true });
   }
   fs.writeFileSync(filepath, content);
 }
 
+export interface Opt {
+  [key: string]: any
+  base: string;
+  name: string;
+  duration: number;
+}
+
 /**
  * Persistent Cache
- * @param {import('./index').Opt} options
+ * @param options
  * @returns
  */
-function cache(options) {
+function cache(options: Partial<Opt> = {}) {
   options = options || {};
 
   const base = path.normalize(
     (options.base ||
       (require.main ? path.dirname(require.main.filename) : undefined) ||
-      process.cwd()) + '/cache'
+      process.cwd()) + "/cache"
   );
   if (!fs.existsSync(path.dirname(base)))
     fs.mkdirSync(path.dirname(base), { recursive: true });
-  const cacheDir = path.normalize(base + '/' + (options.name || 'cache'));
-  const cacheInfinitely = !(typeof options.duration === 'number');
+  const cacheDir = path.normalize(base + "/" + (options.name || "cache"));
+  const cacheInfinitely = !(typeof options.duration === "number");
   const cacheDuration = options.duration;
-  const ram = typeof options.memory == 'boolean' ? options.memory : true;
-  const persist = typeof options.persist == 'boolean' ? options.persist : true;
+  const ram = typeof options.memory == "boolean" ? options.memory : true;
+  const persist = typeof options.persist == "boolean" ? options.persist : true;
   const memoryCache = {};
 
   if (persist && !exists(cacheDir)) mkdirp.sync(cacheDir);
 
   function buildFilePath(name) {
-    return path.normalize(cacheDir + '/' + name + '.json');
+    return path.normalize(cacheDir + "/" + name + ".json");
   }
 
   function buildCacheEntry(data) {
@@ -66,7 +74,7 @@ function cache(options) {
       cacheUntil: !cacheInfinitely
         ? new Date().getTime() + cacheDuration
         : undefined,
-      data: data
+      data: data,
     };
   }
 
@@ -112,7 +120,7 @@ function cache(options) {
       return safeCb(cb)(null, entry);
     }
 
-    fs.readFile(buildFilePath(name), 'utf8', onFileRead);
+    fs.readFile(buildFilePath(name), "utf8", onFileRead);
 
     function onFileRead(err, content) {
       if (err != null) {
@@ -147,7 +155,7 @@ function cache(options) {
 
     let data;
     try {
-      data = JSON.parse(fs.readFileSync(buildFilePath(name), 'utf8'));
+      data = JSON.parse(fs.readFileSync(buildFilePath(name), "utf8"));
     } catch (e) {
       return undefined;
     }
@@ -229,10 +237,14 @@ function cache(options) {
 
     keys: keys,
     keysSync: keysSync,
-
+    /**
+     * get all values
+     */
     valuesSync: valuesSync,
-
-    unlink: unlink
+    /**
+     * delete the folder and files of a persistent cache
+     */
+    unlink,
   };
 }
 
