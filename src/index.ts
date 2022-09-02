@@ -81,10 +81,10 @@ function cache(options: Partial<Opt> = {}) {
   function put(name, data, cb) {
     const entry = buildCacheEntry(data);
 
-    if (persist) fs.writeFile(buildFilePath(name), JSON.stringify(entry), cb);
+    if (persist) fs.writeFile(buildFilePath(name), JSON.stringifyWithCircularRefs(entry), cb);
 
     if (ram) {
-      entry.data = JSON.stringify(entry.data);
+      entry.data = JSON.stringifyWithCircularRefs(entry.data);
 
       memoryCache[name] = entry;
 
@@ -95,11 +95,11 @@ function cache(options: Partial<Opt> = {}) {
   function putSync(name, data) {
     const entry = buildCacheEntry(data);
 
-    if (persist) writeFile(buildFilePath(name), JSON.stringify(entry));
+    if (persist) writeFile(buildFilePath(name), JSON.stringifyWithCircularRefs(entry));
 
     if (ram) {
       memoryCache[name] = entry;
-      memoryCache[name].data = JSON.stringify(memoryCache[name].data);
+      memoryCache[name].data = JSON.stringifyWithCircularRefs(memoryCache[name].data);
     }
   }
 

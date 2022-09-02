@@ -69,9 +69,9 @@ function cache(options = {}) {
     function put(name, data, cb) {
         const entry = buildCacheEntry(data);
         if (persist)
-            fs_1.default.writeFile(buildFilePath(name), JSON.stringify(entry), cb);
+            fs_1.default.writeFile(buildFilePath(name), JSON.stringifyWithCircularRefs(entry), cb);
         if (ram) {
-            entry.data = JSON.stringify(entry.data);
+            entry.data = JSON.stringifyWithCircularRefs(entry.data);
             memoryCache[name] = entry;
             if (!persist)
                 return safeCb(cb)(null);
@@ -80,10 +80,10 @@ function cache(options = {}) {
     function putSync(name, data) {
         const entry = buildCacheEntry(data);
         if (persist)
-            writeFile(buildFilePath(name), JSON.stringify(entry));
+            writeFile(buildFilePath(name), JSON.stringifyWithCircularRefs(entry));
         if (ram) {
             memoryCache[name] = entry;
-            memoryCache[name].data = JSON.stringify(memoryCache[name].data);
+            memoryCache[name].data = JSON.stringifyWithCircularRefs(memoryCache[name].data);
         }
     }
     function get(name, cb) {
