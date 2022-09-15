@@ -118,7 +118,7 @@ function cache(options = {}) {
             return safeCb(cb)(null, entry.data);
         }
     }
-    function getSync(name) {
+    function getSync(name, fallback) {
         if (ram && !!memoryCache[name]) {
             const entry = memoryCache[name];
             if (entry.cacheUntil && new Date().getTime() > entry.cacheUntil) {

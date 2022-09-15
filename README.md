@@ -5,6 +5,9 @@ A simple Node module to persistently store/cache arbitrary data. [NPMJS](https:/
 
 ## How to install
 ```shel
+# prod
+npm install persistent-cache
+# dev
 npm install https://github.com/dimaslanjaka/persistent-cache#improve2
 ```
 
