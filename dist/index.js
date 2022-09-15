@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.persistentCache = void 0;
 const fs_1 = __importDefault(require("fs"));
 const mkdirp_no_bin_1 = __importDefault(require("mkdirp-no-bin"));
 const rmdir_1 = __importDefault(require("rmdir"));
@@ -216,3 +217,4 @@ function cache(options = {}) {
     };
 }
 exports.default = cache;
+exports.persistentCache = cache;

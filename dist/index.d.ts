@@ -87,3 +87,4 @@ declare function cache(options?: Partial<Opt>): {
     }) => any;
 };
 export default cache;
+export declare const persistentCache: typeof cache;

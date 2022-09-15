@@ -308,3 +308,4 @@ function cache(options: Partial<Opt> = {}) {
 }
 
 export default cache;
+export const persistentCache = cache
