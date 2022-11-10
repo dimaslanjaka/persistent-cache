@@ -4,9 +4,12 @@
   "description": "A simple module to persistently store/cache arbitrary data.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "LionC/persistent-cache",
+  "repository": "dimaslanjaka/persistent-cache",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "update": "npx npm-check-updates -u -x chalk,hexo",
+    "build": "tsc",
+    "postbuild": "node packer.js"
   },
   "keywords": [
     "cache",
@@ -29,13 +32,17 @@
   },
   "homepage": "https://github.com/LionC/persistent-cache#readme",
   "dependencies": {
+    "fs-extra": "^10.1.0",
     "mkdirp-no-bin": "^0.5.1",
-    "rmdir": "^1.0.0",
+    "rmdir": "^1.2.0",
     "upath": "^2.0.1"
   },
   "devDependencies": {
-    "@types/node": "^18.7.14",
-    "mocha": "^10.0.0",
-    "should": "^9.0.2"
+    "@types/fs-extra": "^9.0.13",
+    "@types/node": "^18.11.9",
+    "cross-spawn": "^7.0.3",
+    "gulp": "^4.0.2",
+    "mocha": "^10.1.0",
+    "should": "^13.2.3"
   }
 }

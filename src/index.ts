@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs-extra";
 import mkdirp from "mkdirp-no-bin";
 import rmdir from "rmdir";
 import path from "upath";

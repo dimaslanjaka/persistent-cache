@@ -4,14 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.persistentCache = void 0;
-const fs_1 = __importDefault(require("fs"));
+const fs_extra_1 = __importDefault(require("fs-extra"));
 const mkdirp_no_bin_1 = __importDefault(require("mkdirp-no-bin"));
 const rmdir_1 = __importDefault(require("rmdir"));
 const upath_1 = __importDefault(require("upath"));
 require("./JSON");
 function exists(dir) {
     try {
-        fs_1.default.accessSync(dir);
+        fs_extra_1.default.accessSync(dir);
     }
     catch (err) {
         return false;
@@ -31,10 +31,10 @@ function safeCb(cb) {
  * @param {any} content
  */
 function writeFile(filepath, content) {
-    if (!fs_1.default.existsSync(upath_1.default.dirname(filepath))) {
-        fs_1.default.mkdirSync(upath_1.default.dirname(filepath), { recursive: true });
+    if (!fs_extra_1.default.existsSync(upath_1.default.dirname(filepath))) {
+        fs_extra_1.default.mkdirSync(upath_1.default.dirname(filepath), { recursive: true });
     }
-    fs_1.default.writeFileSync(filepath, content);
+    fs_extra_1.default.writeFileSync(filepath, content);
 }
 /**
  * Persistent Cache
@@ -46,8 +46,8 @@ function cache(options = {}) {
     const base = upath_1.default.normalize((options.base ||
         (require.main ? upath_1.default.dirname(require.main.filename) : undefined) ||
         process.cwd()) + "/cache");
-    if (!fs_1.default.existsSync(upath_1.default.dirname(base)))
-        fs_1.default.mkdirSync(upath_1.default.dirname(base), { recursive: true });
+    if (!fs_extra_1.default.existsSync(upath_1.default.dirname(base)))
+        fs_extra_1.default.mkdirSync(upath_1.default.dirname(base), { recursive: true });
     const cacheDir = upath_1.default.normalize(base + "/" + (options.name || "cache"));
     const cacheInfinitely = !(typeof options.duration === "number");
     const cacheDuration = options.duration;
@@ -70,7 +70,7 @@ function cache(options = {}) {
     function put(name, data, cb) {
         const entry = buildCacheEntry(data);
         if (persist)
-            fs_1.default.writeFile(buildFilePath(name), JSON.stringifyWithCircularRefs(entry), cb);
+            fs_extra_1.default.writeFile(buildFilePath(name), JSON.stringifyWithCircularRefs(entry), cb);
         if (ram) {
             entry.data = JSON.stringifyWithCircularRefs(entry.data);
             memoryCache[name] = entry;
@@ -101,7 +101,7 @@ function cache(options = {}) {
             }
             return safeCb(cb)(null, entry);
         }
-        fs_1.default.readFile(buildFilePath(name), "utf8", onFileRead);
+        fs_extra_1.default.readFile(buildFilePath(name), "utf8", onFileRead);
         function onFileRead(err, content) {
             if (err != null) {
                 return safeCb(cb)(null, undefined);
@@ -129,7 +129,7 @@ function cache(options = {}) {
         }
         let data;
         try {
-            data = JSON.parse(fs_1.default.readFileSync(buildFilePath(name), "utf8"));
+            data = JSON.parse(fs_extra_1.default.readFileSync(buildFilePath(name), "utf8"));
         }
         catch (e) {
             return undefined;
@@ -144,7 +144,7 @@ function cache(options = {}) {
             if (!persist)
                 safeCb(cb)(null);
         }
-        fs_1.default.unlink(buildFilePath(name), cb);
+        fs_extra_1.default.unlink(buildFilePath(name), cb);
     }
     function deleteEntrySync(name) {
         if (ram) {
@@ -152,7 +152,7 @@ function cache(options = {}) {
             if (!persist)
                 return;
         }
-        fs_1.default.unlinkSync(buildFilePath(name));
+        fs_extra_1.default.unlinkSync(buildFilePath(name));
     }
     function unlink(cb) {
         if (persist)
@@ -163,14 +163,14 @@ function cache(options = {}) {
         return fileName.slice(0, -5);
     }
     function resolveDir(dirPath) {
-        if (!fs_1.default.existsSync(dirPath))
-            fs_1.default.mkdirSync(dirPath, { recursive: true });
+        if (!fs_extra_1.default.existsSync(dirPath))
+            fs_extra_1.default.mkdirSync(dirPath, { recursive: true });
     }
     function keys(cb) {
         cb = safeCb(cb);
         if (ram && !persist)
             return cb(null, Object.keys(memoryCache));
-        fs_1.default.readdir(cacheDir, onDirRead);
+        fs_extra_1.default.readdir(cacheDir, onDirRead);
         function onDirRead(err, files) {
             return err ? cb(err) : cb(err, files.map(transformFileNameToKey));
         }
@@ -179,7 +179,7 @@ function cache(options = {}) {
         if (ram && !persist)
             return Object.keys(memoryCache);
         resolveDir(cacheDir);
-        return fs_1.default.readdirSync(cacheDir).map(transformFileNameToKey);
+        return fs_extra_1.default.readdirSync(cacheDir).map(transformFileNameToKey);
     }
     function valuesSync() {
         return keysSync().map((key) => {
