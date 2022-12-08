@@ -45,7 +45,7 @@
     "mocha": "^10.1.0",
     "should": "^13.2.3"
   },
-  "optionalDependencies": { 
+  "optionalDependencies": {
     "glob-parent": ">=5.1.2",
     "node.extend": ">=1.1.7"
   }
