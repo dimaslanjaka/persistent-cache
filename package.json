@@ -44,5 +44,8 @@
     "gulp": "^4.0.2",
     "mocha": "^10.1.0",
     "should": "^13.2.3"
+  },
+  "optionalDependencies": { 
+    "node.extend": ">=1.1.7"
   }
 }
