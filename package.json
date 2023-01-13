@@ -32,21 +32,21 @@
   },
   "homepage": "https://github.com/LionC/persistent-cache#readme",
   "dependencies": {
-    "fs-extra": "^10.1.0",
+    "fs-extra": "^11.1.0",
     "mkdirp-no-bin": "^0.5.1",
     "rmdir": "^1.2.0",
     "upath": "^2.0.1"
   },
   "devDependencies": {
-    "@types/fs-extra": "^9.0.13",
-    "@types/node": "^18.11.9",
+    "@types/fs-extra": "^11.0.1",
+    "@types/node": "^18.11.18",
     "cross-spawn": "^7.0.3",
     "gulp": "^4.0.2",
-    "mocha": "^10.1.0",
+    "mocha": "^10.2.0",
     "should": "^13.2.3"
   },
   "optionalDependencies": {
-    "glob-parent": ">=5.1.2",
-    "node.extend": ">=1.1.7"
+    "glob-parent": ">=6.0.2",
+    "node.extend": ">=2.0.2"
   }
 }

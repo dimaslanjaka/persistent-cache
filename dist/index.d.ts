@@ -71,9 +71,9 @@ declare function cache(options?: Partial<Opt>): {
     putSync: (name: string, data: any) => void;
     setSync: (name: string, data: any) => void;
     getSync: <T = string>(name: string, fallback?: T) => T;
-    deleteSync: (name: any) => void;
+    deleteSync: (name: string) => void;
     keys: (cb: (e: Error, ...args: any[]) => any) => any;
-    keysSync: () => any[];
+    keysSync: () => string[];
     /**
      * get all values
      */

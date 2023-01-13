@@ -27,14 +27,20 @@ function safeCb(cb) {
 }
 /**
  * write to file recursive
- * @param {string} filepath
- * @param {any} content
+ * @param filepath
+ * @param content
+ * @param callback async callback
  */
-function writeFile(filepath, content) {
+function writeFile(filepath, content, callback) {
     if (!fs_extra_1.default.existsSync(upath_1.default.dirname(filepath))) {
         fs_extra_1.default.mkdirSync(upath_1.default.dirname(filepath), { recursive: true });
     }
-    fs_extra_1.default.writeFileSync(filepath, content);
+    if (typeof callback === "function") {
+        fs_extra_1.default.writeFile(filepath, content, callback);
+    }
+    else {
+        fs_extra_1.default.writeFileSync(filepath, content);
+    }
 }
 /**
  * Persistent Cache
@@ -46,8 +52,9 @@ function cache(options = {}) {
     const base = upath_1.default.normalize((options.base ||
         (require.main ? upath_1.default.dirname(require.main.filename) : undefined) ||
         process.cwd()) + "/cache");
-    if (!fs_extra_1.default.existsSync(upath_1.default.dirname(base)))
+    if (!fs_extra_1.default.existsSync(upath_1.default.dirname(base))) {
         fs_extra_1.default.mkdirSync(upath_1.default.dirname(base), { recursive: true });
+    }
     const cacheDir = upath_1.default.normalize(base + "/" + (options.name || "cache"));
     const cacheInfinitely = !(typeof options.duration === "number");
     const cacheDuration = options.duration;
@@ -67,10 +74,18 @@ function cache(options = {}) {
             data: data,
         };
     }
+    /**
+     * add cache async callback
+     * @param name
+     * @param data
+     * @param cb
+     * @returns
+     */
     function put(name, data, cb) {
         const entry = buildCacheEntry(data);
-        if (persist)
-            fs_extra_1.default.writeFile(buildFilePath(name), JSON.stringifyWithCircularRefs(entry), cb);
+        if (persist) {
+            writeFile(buildFilePath(name), JSON.stringifyWithCircularRefs(entry), cb);
+        }
         if (ram) {
             entry.data = JSON.stringifyWithCircularRefs(entry.data);
             memoryCache[name] = entry;
@@ -78,15 +93,27 @@ function cache(options = {}) {
                 return safeCb(cb)(null);
         }
     }
+    /**
+     * add cache synchronous
+     * @param name
+     * @param data
+     */
     function putSync(name, data) {
         const entry = buildCacheEntry(data);
-        if (persist)
+        if (persist) {
             writeFile(buildFilePath(name), JSON.stringifyWithCircularRefs(entry));
+        }
         if (ram) {
             memoryCache[name] = entry;
             memoryCache[name].data = JSON.stringifyWithCircularRefs(memoryCache[name].data);
         }
     }
+    /**
+     * get cache by key with async callback
+     * @param name
+     * @param cb
+     * @returns
+     */
     function get(name, cb) {
         if (ram && !!memoryCache[name]) {
             let entry = memoryCache[name];
@@ -119,6 +146,12 @@ function cache(options = {}) {
             return safeCb(cb)(null, entry.data);
         }
     }
+    /**
+     * get cache by key synchronously
+     * @param name
+     * @param fallback
+     * @returns
+     */
     function getSync(name, fallback) {
         if (ram && !!memoryCache[name]) {
             const entry = memoryCache[name];
