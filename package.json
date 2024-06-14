@@ -41,7 +41,7 @@
     "@types/fs-extra": "^11.0.1",
     "@types/node": "^18.11.18",
     "cross-spawn": "^7.0.3",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "mocha": "^10.2.0",
     "should": "^13.2.3"
   },
